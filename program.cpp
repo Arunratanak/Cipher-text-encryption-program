@@ -4,42 +4,58 @@
 
 using namespace std;
 
-string getCipherKey() {
-    return "QWERTYUIOPASDFGHJKLZXCVBNM";
-}
+char alphabet[26] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G',
+    'H', 'I', 'J', 'K', 'L', 'M', 'N',
+    'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+    'V', 'W', 'X', 'Y', 'Z'};
 
-string encryptMessage(const string& message, const string& cipherAlphabet) {
-    const string normalAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    string encryptedText = "";
+string encrypt(string plaintext, int key)
+{
+    key = ((key % 26) + 26) % 26;
 
-    for (char c : message) {
-        if (isupper(c)) {
-            size_t index = normalAlphabet.find(c);
-            encryptedText += cipherAlphabet[index];
+    string ciphertext = "";
+
+    for (int i = 0; i < plaintext.length(); i++)
+    {
+        char c = plaintext[i];
+
+        if (c >= 'A' && c <= 'Z')
+        {
+            int position = c - 'A';
+            int newPosition = (position + key) % 26;
+
+            ciphertext += alphabet[newPosition];
         }
-        else if (islower(c)) {
-            char upperC = toupper(c);
-            size_t index = normalAlphabet.find(upperC);
-            encryptedText += tolower(cipherAlphabet[index]);
-        }
+        else if (c >= 'a' && c <= 'z')
+        {
+            int position = c - 'a';
+            int newPosition = (position + key) % 26;
 
-        else {
-            encryptedText += c;
+            ciphertext += alphabet[newPosition] + 32;
+        }
+        else
+        {
+            ciphertext += c;
         }
     }
-    return encryptedText;
+    return ciphertext;
 }
 
-int main() {
-    string secretMessage;
+int main()
+{
+    string plaintext;
+    int key;
     cout << "Enter the message you want to encrypt: ";
-    getline(cin, secretMessage);
+    cin >> plaintext;
 
-    string secretKey = getCipherKey();
-    string encryptedMessage = encryptMessage(secretMessage, secretKey);
-    
+    cout << "Enter the key: ";
+    cin >> key;
+
+    string encryptedMessage = encrypt(plaintext, key);
+
     cout << "\n_____ENCRYPTION RESULT_____" << endl;
-    cout << "Original: " << secretMessage << endl;
+    cout << "Original: " << plaintext << endl;
     cout << "Encrypted: " << encryptedMessage << endl;
 
     return 0;
